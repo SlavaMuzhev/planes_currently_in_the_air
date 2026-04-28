@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional
+
 from src.base_api_adapter import BaseApiAdapter
 
 
@@ -9,8 +10,8 @@ class APIAdapter(BaseApiAdapter):
     """
 
     def __init__(self) -> None:
-        self.__openstreetmap_url = "https://openstreetmap.org"
-        self.__opensky_url = "https://opensky-network.org"
+        self.__openstreetmap_url = "https://nominatim.openstreetmap.org/search"
+        self.__opensky_url = "https://opensky-network.org/api/states/all"
         self.coordinate: Optional[List[float]] = None
         self.aeroplanes: List[Dict[str, Any]] = []
 
@@ -51,13 +52,15 @@ class APIAdapter(BaseApiAdapter):
             self.aeroplanes = []
             if states:
                 for s in states:
-                    self.aeroplanes.append({
-                        "icao24": s[0],
-                        "callsign": s[1].strip() if s[1] else "Unknown",
-                        "origin_country": s[2],
-                        "velocity": s[9],
-                        "altitude": s[7]
-                    })
+                    self.aeroplanes.append(
+                        {
+                            "icao24": s[0],
+                            "callsign": s[1].strip() if s[1] else "Unknown",
+                            "origin_country": s[2],
+                            "velocity": s[9],
+                            "altitude": s[7],
+                        }
+                    )
         except Exception as e:
             print(f"Ошибка при получении данных OpenSky: {e}")
             self.aeroplanes = []

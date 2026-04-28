@@ -1,24 +1,25 @@
 import os
+from dotenv import load_dotenv
+
 from src.api import APIAdapter
 from src.db_manager import DBManager
 
 
-def main():
+def main() -> None:
+    load_dotenv()
+
     db_params = {
-        "host": "localhost",
-        "database": "your_db_name",
-        "user": "your_username",
-        "password": "your_password",
-        "port": 5432
+        "database": os.getenv("DB_NAME"),
+        "user": os.getenv("DB_USER"),
+        "password": os.getenv("DB_PASSWORD"),
+        "host": os.getenv("DB_HOST"),
+        "port": os.getenv("DB_PORT")
     }
 
     adapter = APIAdapter()
     db = DBManager(db_params)
 
-    countries = [
-        "Russia", "Germany", "France", "China", "USA",
-        "Italy", "Japan", "Spain", "Turkey", "Canada"
-    ]
+    countries = ["Russia", "Germany", "France", "China", "USA", "Italy", "Japan", "Spain", "Turkey", "Canada"]
 
     try:
         print("--- Подготовка базы данных ---")
@@ -51,14 +52,14 @@ def main():
 
         # 2. Средняя скорость
         avg_speed = db.get_avg_speed()
-        print(f"\nСредняя скорость всех самолетов: {avg_speed[0] if avg_speed[0] else 0:.2f} м/с")
+        print(f"\nСредняя скорость всех самолетов: {avg_speed:.2f} м/с")
 
         # 3. Самолеты со скоростью выше средней
         high_speed_planes = db.get_aeroplanes_with_higher_speed()
         print(f"Количество самолетов быстрее среднего: {len(high_speed_planes)}")
 
         # 4. Поиск по ключевому слову
-        keyword = 'ACA'
+        keyword = "ACA"
         keyword_planes = db.get_aeroplanes_with_keyword(keyword)
         print(f"\nСамолеты с позывным, содержащим '{keyword}': {len(keyword_planes)}")
         for plane in keyword_planes[:5]:  # Показываем первые 5 для примера
